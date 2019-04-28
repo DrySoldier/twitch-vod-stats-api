@@ -1,6 +1,6 @@
 # Twitch Vod Stats API
 
-## Front-end for site found here: 
+## Front-end repo for site found here: 
 
 https://github.com/DrySoldier/twitch-vod-stats
 
