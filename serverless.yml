@@ -1,0 +1,22 @@
+service: twitch-vod-stats-api # NOTE: update this with your service name
+
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+
+
+
+functions:
+  app:
+    handler: app.handler
+    timeout: 900
+    # The `events` block defines how to trigger the http events
+    events:
+        - http: ANY /
+        - http: 'ANY {proxy+}'
+
+
+
+plugins:
+  - serverless-offline
