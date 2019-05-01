@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const statSchema = new Schema({
   vodID: { type: Number, require: true },
-  textLog: { type: Array, required: true },
+  textLog: { type: Array },
   vodTitle: { type: String },
   vodURL: { type: String },
   previewURL: { type: String },
@@ -14,4 +14,4 @@ const statSchema = new Schema({
 
 const Stats = mongoose.model("Stat", statSchema);
 
-module.exports = Stats;
+module.exports = mongoose.models.Stats || Stats;

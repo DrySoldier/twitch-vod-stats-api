@@ -65,12 +65,6 @@ module.exports = {
               console.log('Checking if data exists');
               if (!Array.isArray(obj) || !obj.length) {
 
-                // CREATE IT REAL QUICK RIGHT HERE
-
-                /////
-
-                ////
-
                 console.log('Data does not exist, creating data...');
 
                 var child = exec(`node_modules/twitch-chatlog/bin/twitch-chatlog -l 0 ${req.params.id} > /tmp/${req.params.id}.txt`);
@@ -108,7 +102,6 @@ module.exports = {
                     db.Stat.create(stat)
                       .then(stat => {
                         console.log(stat)
-                        res.send(req.params.id);
                       })
                       .catch(err => console.log(err));
                   });
@@ -214,12 +207,14 @@ module.exports = {
           }
 
           if (obj[0].textLog.length >= 32000) {
+            obj[0].textLog = {};
             stats = {
               topTenChatters,
               topTenMessages,
               totalMessages,
               totalUniqueChatters,
               countsTimeStamps,
+              obj
             }
           } else {
             stats = {
@@ -248,5 +243,19 @@ module.exports = {
         });
       });
   },
+  areStatsCreated: function(req, res){
+    console.log('Checking if object with id: ' + req.params.id + ' is created')
+    connectToDatabase()
+    .then(() => {
+      db.Stat.find({ vodID: req.params.id }).then((obj) => {
+        if (!Array.isArray(obj) || !obj.length) {
+          console.log('Object not created');
+        } else {
+          console.log('Object created, sending this:', req.params.id);
+          res.send(req.params.id);
+        }
+      });
+    });
+  }
 
 };
