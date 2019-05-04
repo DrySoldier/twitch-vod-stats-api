@@ -28,13 +28,11 @@ function secondsToHms(d) {
   d = Number(d);
   var h = Math.floor(d / 3600);
   var m = Math.floor(d % 3600 / 60);
-  var s = Math.floor(d % 3600 % 60);
 
   var hDisplay = h > 0 ? h + (h == 1 ? "h: " : "h: ") : "";
   var mDisplay = m > 0 ? m + (m == 1 ? "m: " : "m: ") : "";
-  var sDisplay = s > 0 ? s + (s == 1 ? "s" : "s") : "";
 
-  return hDisplay + mDisplay + sDisplay;
+  return hDisplay + mDisplay;
 }
 
 function getDifference(timestamp1, timestamp2) {
@@ -128,8 +126,6 @@ module.exports = {
       .then(() => {
         db.Stat.find({ vodID: req.params.id }).then((obj) => {
 
-          console.log(obj)
-
           let topTenChatters = [];
           let topTenMessages = [];
           let totalMessages = 0;
@@ -205,6 +201,9 @@ module.exports = {
           for (var x in countsTimeStamps) {
             chatFrequency.push([x, countsTimeStamps[x]]);
           }
+
+          console.log('get chat')
+          console.log('chat', chatFrequency)
 
           if (obj[0].textLog.length >= 32000) {
             obj[0].textLog = {};
