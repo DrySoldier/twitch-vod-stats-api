@@ -29,8 +29,8 @@ function secondsToHms(d) {
   var h = Math.floor(d / 3600);
   var m = Math.floor(d % 3600 / 60);
 
-  var hDisplay = h > 0 ? h + (h == 1 ? "h: " : "h: ") : "";
-  var mDisplay = m > 0 ? m + (m == 1 ? "m: " : "m: ") : "";
+  var hDisplay = h > 0 ? h + "h: " : "";
+  var mDisplay = m > 0 ? m + "m " : "";
 
   return hDisplay + mDisplay;
 }
@@ -69,7 +69,7 @@ module.exports = {
 
                 child.stdout.on('data', function (data) {
                   console.log('stdout: ' + data);
-                  //Here is where the output goes
+
                 });
 
                 child.stderr.on('data', function (data) {
@@ -96,12 +96,22 @@ module.exports = {
                       dateCreated: channel.updated_at,
                     }
                     console.log('object being created');
-                    console.log(stat);
-                    db.Stat.create(stat)
-                      .then(stat => {
-                        console.log(stat)
-                      })
-                      .catch(err => console.log(err));
+
+                    db.Stat.find({ vodID: req.params.id }).then((obj) => {
+                      console.log('Checking if data exists');
+                      if (!Array.isArray(obj) || !obj.length) {
+
+                        console.log('Data does not exist, creating data...');
+
+                        db.Stat.create(stat)
+                          .then(stat => {
+                            console.log(stat)
+                          })
+                          .catch(err => console.log(err));
+                      } else {
+                        console.log('Data already exists!');
+                      }
+                    });
                   });
 
                 });
@@ -196,15 +206,6 @@ module.exports = {
           topTenMessages = sortMinToMax(countsMessage).reverse();
           topTenChatters = sortMinToMax(countsName).reverse();
 
-          let chatFrequency = [];
-
-          for (var x in countsTimeStamps) {
-            chatFrequency.push([x, countsTimeStamps[x]]);
-          }
-
-          console.log('get chat')
-          console.log('chat', chatFrequency)
-
           if (obj[0].textLog.length >= 32000) {
             obj[0].textLog = {};
             stats = {
@@ -213,6 +214,8 @@ module.exports = {
               totalMessages,
               totalUniqueChatters,
               countsTimeStamps,
+              messagesOnly,
+              timeStampsOnly,
               obj
             }
           } else {
@@ -222,7 +225,9 @@ module.exports = {
               totalMessages,
               totalUniqueChatters,
               countsTimeStamps,
-              obj
+              obj,
+              messagesOnly,
+              timeStampsOnly,
             }
           }
 
@@ -242,19 +247,47 @@ module.exports = {
         });
       });
   },
-  areStatsCreated: function(req, res){
+  areStatsCreated: function (req, res) {
     console.log('Checking if object with id: ' + req.params.id + ' is created')
     connectToDatabase()
-    .then(() => {
-      db.Stat.find({ vodID: req.params.id }).then((obj) => {
-        if (!Array.isArray(obj) || !obj.length) {
-          console.log('Object not created');
-        } else {
-          console.log('Object created, sending this:', req.params.id);
-          res.send(req.params.id);
-        }
+      .then(() => {
+        db.Stat.find({ vodID: req.params.id }).then((obj) => {
+          if (!Array.isArray(obj) || !obj.length) {
+            console.log('Object not created');
+          } else {
+            console.log('Object created, sending this:', req.params.id);
+            res.send(req.params.id);
+          }
+        });
       });
-    });
+  },
+  getRecentStats: function (req, res) {
+
+    console.log('recent stats');
+
+    connectToDatabase()
+      .then(() => {
+        db.Stat.find().sort({ $natural: -1 }).limit(10).then((obj) => {
+
+          let previewArr = [];
+          let titleArr = [];
+          let vodIDArr = [];
+
+          obj.forEach(element => {
+            previewArr.push(element.previewURL);
+            titleArr.push(element.vodTitle),
+              vodIDArr.push(element.vodID)
+          });
+
+          let stats = {
+            previewArr,
+            titleArr,
+            vodIDArr
+          }
+
+          res.send(stats);
+        });
+      });
   }
 
 };

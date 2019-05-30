@@ -13,4 +13,8 @@ router
   .route('/statTest/:id')
   .get(vodController.areStatsCreated)
 
+router
+  .route('/recentStats/recentStats')
+  .get(vodController.getRecentStats)
+
 module.exports = router;
