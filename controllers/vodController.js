@@ -74,7 +74,6 @@ module.exports = {
 
                 child.stderr.on('data', function (data) {
                   console.log('stderr: ' + data);
-
                 });
 
                 child.on('close', function (code) {
@@ -254,6 +253,7 @@ module.exports = {
         db.Stat.find({ vodID: req.params.id }).then((obj) => {
           if (!Array.isArray(obj) || !obj.length) {
             console.log('Object not created');
+            res.send(false);
           } else {
             console.log('Object created, sending this:', req.params.id);
             res.send(req.params.id);
