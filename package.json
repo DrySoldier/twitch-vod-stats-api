@@ -14,7 +14,7 @@
     "cors": "^2.8.5",
     "dotenv": "^7.0.0",
     "express": "^4.16.4",
-    "mongoose": "^5.5.4",
+    "mongoose": "^5.7.5",
     "serverless-http": "^2.0.1",
     "twitch-api-v5": "^2.0.4",
     "twitch-chatlog": "^6.1.0"
