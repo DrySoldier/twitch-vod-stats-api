@@ -17,7 +17,7 @@
     "mongoose": "^5.5.4",
     "serverless-http": "^2.0.1",
     "twitch-api-v5": "^2.0.4",
-    "twitch-chatlog": "^6.1.0"
+    "twitch-chatlog": "^7.0.0"
   },
   "devDependencies": {
     "serverless-offline": "^4.10.6"
